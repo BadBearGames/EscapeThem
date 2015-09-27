@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<script type="text/javascript">
+    
+var gameScaleData = {
+    scaleValue: 1 //.52
+};
+    
+var fd = {
+    leaderboard: null,
+    facebook: null,
+    ad: null,
+    adOptions: null,
+    adPosition:
+    {
+        left: '70%',
+        top: '60%',
+        reference: 'center'
+        //parent: document.getElementById( 'canvas' )
+    },
+    clayEnabled: false,
+    clayAdsEnabled: false
+};
+
+    
+//---------
+var Clay = Clay || {};
+Clay.gameKey = "escapethem";
+Clay.readyFunctions = [];
+Clay.options = { debug: false, hideUI: false, fail: function() {
+    console.log( "Couldn't connect" );
+} };
+
+Clay.ready = function( fn ) {
+    Clay.readyFunctions.push( fn );
+};
+( function() {
+
+    var clay = document.createElement("script"); clay.async = true;
+    clay.src = ( "https:" == document.location.protocol ? "https://" : "http://" ) + "clay.io/api/api.js"; 
+    var tag = document.getElementsByTagName("script")[0]; tag.parentNode.insertBefore(clay, tag);
+} )();
+//---------
+    
+    
+Clay.ready( function() {
+    
+    fd.leaderboard = new Clay.Leaderboard( { id: "escapeThemScores" } );
+    fd.facebook = new Clay.Facebook();
+    
+    fd.adOptions = {
+        size: '125x125', 
+        position: 
+        { 
+            left: '50%', //70
+            top: '50%',//60
+            reference: 'center'
+            //Sparent: document.getElementById( 'canvas' )
+        },
+        devices: 'all',
+        refreshInterval: 45 // refresh this ad once per minute
+    }
+    
+    fd.ad = new Clay.Advertisement( fd.adOptions );
+    if (fd.clayAdsEnabled == false)
+    {
+        fd.ad.hide();
+    }
+} );
+
+    
+</script>
+<head>
+	<title>Escape Them</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="HandheldFriendly" content="true" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="HandheldFriendly" content="true" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-mobile-web-app-title" content="Escape Them">
+	<meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<!-- non-retina iPhone pre iOS 7 -->
+	<link rel="apple-touch-icon" sizes="57x57" href="icons/app_icon_57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="icons/app_icon_60x60.png">
+	<!-- non-retina iPad pre iOS 7 -->
+	<link rel="apple-touch-icon" sizes="72x72" href="icons/app_icon_72x72.png">
+	<!-- non-retina iPad iOS 7 -->
+	<link rel="apple-touch-icon" sizes="76x76" href="icons/app_icon_76x76.png">
+	<!-- retina iPhone pre iOS 7 -->
+	<link rel="apple-touch-icon" sizes="114x114" href="icons/app_icon_114x114.png">
+	<!-- retina iPhone iOS 7 -->
+	<link rel="apple-touch-icon" sizes="120x120" href="icons/app_icon_120x120.png">
+	<!-- retina iPad pre iOS 7 -->
+	<link rel="apple-touch-icon" sizes="144x144" href="icons/app_icon_144x144.png">
+	<!-- retina iPad iOS 7 -->
+	<link rel="apple-touch-icon" sizes="152x152" href="icons/app_icon_152x152.png">
+	<link rel="apple-touch-icon" sizes="256x256" href="icons/app_icon_256x256.png">
+	<link rel="apple-touch-icon" sizes="512x512" href="icons/app_icon_512x512.png">
+	<link rel="apple-touch-icon" sizes="1024x1024" href="icons/app_icon_1024x1024.png">
+	<link rel="stylesheet" href="css/stylesheet.css" type="text/css" charset="utf-8" />
+	<script src="js/phaser.min.js"></script>
+	<script src="src/Boot.js"></script>
+	<script src="src/Preloader.js"></script>
+	<script src="src/MainMenu.js"></script>
+	<script src="src/Game.js"></script>
+	<script src="src/Splash.js"></script>
+	<script src="src/Cutscene.js"></script>
+	<script src="src/GameOver.js"></script>
+    <script src="src/RoundMenu.js"></script>
+    <script src="src/Unlocks.js"></script>
+	
+    
+<style>
+html, body {
+margin: 0;
+padding: 0;
+overflow: hidden;
+background-color: #000;
+}
+</style>
+
+
+</head>
+<body>
+
+	<div id="game"></div>
+	<div id="orientation"></div>
+
+<script type="text/javascript">
+(function () {
+    
+	//	Create your Phaser game and inject it into the game div.
+	//	We did it in a window.onload event, but you can do it anywhere (requireJS load, anonymous function, jQuery dom ready, - whatever floats your boat)
+	//	We're using a game size of 1024 x 768 here, but you can use whatever you feel makes sense for your game of course.
+	var game = new Phaser.Game(1024 * gameScaleData.scaleValue, 768 * gameScaleData.scaleValue, Phaser.AUTO, 'game'); //0.5 seems like good scale
+    //var game = new Phaser.Game(720, 540, Phaser.AUTO, 'game');
+    //var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game');
+
+
+	//	Add the States your game has.
+	//	You don't have to do this in the html, it could be done in your Boot state too, but for simplicity I'll keep it here.
+	game.state.add('Boot', BasicGame.Boot);
+	game.state.add('Preloader', BasicGame.Preloader);
+	game.state.add('MainMenu', BasicGame.MainMenu);
+	game.state.add('Game', BasicGame.Game);
+	game.state.add('Splash', BasicGame.Splash);
+	game.state.add('Cutscene', BasicGame.Cutscene);
+	game.state.add('GameOver', BasicGame.GameOver);
+    game.state.add('RoundMenu', BasicGame.RoundMenu);
+    game.state.add('Unlocks', BasicGame.Unlocks);
+
+	//	Now start the Boot state.
+	game.state.start('Boot');
+
+})();
+</script>
+
+</body>
+    <div id="fb-root"></div>
+</html>
